@@ -39,7 +39,11 @@ class Parser
     private $eventargument;
     private $viewstate;
     private $viewstategenerator;
-
+    private $eventtarget2;
+    private $viewstate2;
+    private $viewstategenerator2;
+    private $href;
+    private $response;
 
     public function __construct($email, $password)
     {
@@ -68,7 +72,6 @@ class Parser
                 'ctl00$centerZone$ZoneLogin$chBoxRemember' => 'on'
             ],
         ]);
-
         return $this;
     }
 
@@ -79,12 +82,12 @@ class Parser
 //       for ($i = 1; $i <= 1000; $i++) {
         $html = new Htmldom($page);// . $i);
         //var_dump($html);
-        //foreach($html->find('div.') as $element){
-            //    $href = $element->find('a', 0)->href;
-//                $this->parseResume($href);
-            //    var_dump($href);
-            //break;
-            //}
+        foreach($html->find('.cvitem') as $element){
+                $href = $element->find('a', 0)->href;
+                $this->parseResume($href);
+                var_dump($href);
+            break;
+            }
 //        }
     }
 
@@ -92,18 +95,34 @@ class Parser
     {
         $user_id = preg_replace("/^\/resumes\/(\d+)\/$/", "$1", $uri);
         sleep(3); // pause
-//        $response = $this->client->post(self::OPEN_DATA_URL, [
-//            'form_params' => [
-//                'func' => 'showResumeContacts',
-//                'id' => $user_id
-//            ]
-//        ]);
+        $response = $this->client->get(self::BASE_URL . $this->href);
+        var_dump($response);
+//        $dom = new Htmldom($response->getBody());
+//        var_dump($response->getBody()->getContents());
+//        $this->eventtarget2 = 'ctl00$centerZone$BriefResume1$CvView1$cvHeader$lnkBuyCv';
+//        $this->eventargument = $dom->find('input[name=__EVENTARGUMENT]', 0)->value;
+//        $this->viewstate2 = $dom->find('input[name=__VIEWSTATE]', 0)->value;
+//        $this->viewstategenerator = $dom->find('input[name=__VIEWSTATEGENERATOR]', 0)->value;
 //
+//        sleep(3);
+//        $response = $this->client->post(self::BASE_URL . $this->href, [
+//            'form_params' => [
+//                '__EVENTTARGET' => $this->eventtarget2,
+//                '__EVENTARGUMENT' => $this->eventargument,
+//                '__VIEWSTATE' => $this->viewstate2,
+//                '__VIEWSTATEGENERATOR' => $this->viewstategenerator2,
+//                'ctl00$centerZone$BriefResume1$CvView1$cvHeader$AjaxLogin1$txtLogin' => $this->email,
+//                'ctl00$centerZone$BriefResume1$CvView1$cvHeader$AjaxLogin1$txtPassword' => $this->password,
+//                'ctl00$centerZone$BriefResume1$CvView1$cvHeader$hdnPrev' => 'http://rabota.ua/employer/find/cv_list?period=7&sort=score&pg=2',
+//                'ctl00$centerZone$ZoneLogin$chBoxRemember' => 'on'
+//            ],
+//        ]);
+
 //        $response = json_decode($response->getBody()->getContents());
 //        if ($response->status <> 'ok') {
 //            return;
 //        }
-//
+
 //        $phone = $response->contact->phone_prim;
 //        $email = $response->contact->email;
 
