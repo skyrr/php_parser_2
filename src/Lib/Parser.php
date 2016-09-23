@@ -148,7 +148,7 @@ class Parser
             "phone" => $phone,
             "email" => $email
         ]);
-
+//
                 //$success = $resume->create();
 
 
