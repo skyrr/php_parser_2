@@ -25,6 +25,7 @@ class Parser
 
     private $email;
     private $password;
+    //make changes to /home/volodymyr/Documents/emailparser rabotaua/vendor/guzzlehttp/guzzle/src  - comment CookieJar.php 149-156
 
     /**
      * @var $client Client
@@ -85,7 +86,7 @@ class Parser
                 foreach($html->find('.cvitem') as $element){
                         $href = $element->find('a', 0)->href;
 //                        $this->href = $element->find('a', 0)->href;
-                    $href = '/cv/8223596';
+                    $href = '/cv/9265387';
                         $this->parseResume($href);
                     //    var_dump($href);
                     break;
@@ -144,7 +145,7 @@ class Parser
 
         $resume = new Resume();
         $resume->create([
-            "url" => $uri,
+            "url" => self::BASE_URL . $uri,
             "phone" => $phone,
             "email" => $email
         ]);
