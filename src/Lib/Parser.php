@@ -18,10 +18,7 @@ class Parser
     const BASE_URL = 'http://rabota.ua';
     const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.92 Safari/537.36';
     const LOGIN_URL = self::BASE_URL . '/employer/login';
-    //http://rabota.ua/employer/find/cv_list?period=7&sort=score&pg=1
-    //http://rabota.ua/employer/find/cv_list?keywords=&regionid=0
     const RESUME_URL = self::BASE_URL . '/employer/find/cv_list?period=7&sort=score&pg=1';
-    //const OPEN_DATA_URL = self::BASE_URL . '/_data/_ajax/resumes_selection.php';
 
     private $email;
     private $password;
@@ -83,9 +80,9 @@ class Parser
         $html = new Htmldom($page);// . $i);
         //var_dump($html);
         foreach($html->find('.cvitem') as $element){
-                $href = $element->find('a', 0)->href;
-                $this->parseResume($href);
-                var_dump($href);
+                $this->href = $element->find('a', 0)->href;
+                $this->parseResume($this->href);
+                //$this->parseResume($this->href);
             break;
             }
 //        }
