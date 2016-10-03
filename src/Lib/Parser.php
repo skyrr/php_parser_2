@@ -18,14 +18,13 @@ class Parser
         const BASE_URL = 'http://rabota.ua';
     const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.92 Safari/537.36';
     const LOGIN_URL = self::BASE_URL . '/employer/login';
-    //http://rabota.ua/employer/find/cv_list?period=7&sort=score&pg=1
-    //http://rabota.ua/employer/find/cv_list?keywords=&regionid=0
-    const RESUME_URL = self::BASE_URL . '/employer/find/cv_list?period=7&sort=score&pg=1';
+    const RESUME_URL = self::BASE_URL . '/employer/find/cv_list?period=7&sort=score&pg=';
+    //const RESUME_URL = self::BASE_URL . '/employer/find/cv_list?period=7&sort=score&pg=1';
     //const OPEN_DATA_URL = self::BASE_URL . '/_data/_ajax/resumes_selection.php';
 
     private $email;
     private $password;
-    //make changes to /home/volodymyr/Documents/emailparser rabotaua/vendor/guzzlehttp/guzzle/src  - comment CookieJar.php 149-156
+    //make changes to /home/user/Documents/emailparser rabotaua/vendor/guzzlehttp/guzzle/src  - comment CookieJar.php 149-156
 
     /**
      * @var $client Client
@@ -80,41 +79,32 @@ class Parser
     {
         sleep(3);
         $page = self::RESUME_URL;
-        //       for ($i = 1; $i <= 1000; $i++) {
-        $html = new Htmldom($page);// . $i);
-                //var_dump($html);
-                foreach($html->find('.cvitem') as $element){
-                        $href = $element->find('a', 0)->href;
-//                        $this->href = $element->find('a', 0)->href;
-                    $href = '/cv/9265387';
-                        $this->parseResume($href);
-                    //    var_dump($href);
-                    break;
-                    }
-        //        }
+        for ($i = 1; $i <= 1000; $i++) {
+            $html = new Htmldom($page . $i);// . $i);
+            //var_dump($html);
+            foreach($html->find('.cvitem') as $element){
+                $href = $element->find('a', 0)->href;
+                //$href = '/cv/9265387';
+                $this->parseResume($href);
+                //    var_dump($href);
+//              break;
             }
+        }
+    }
 
     public function parseResume($uri)
     {
-        //$response = $this->client->get(self::RESUME_URL);
         var_dump("////////////////////////////////////////////////////////////////////");
-        //var_dump($response->getStatusCode());
 
         //$user_id = preg_replace("/^\/resumes\/(\d+)\/$/", "$1", $uri);
-//        $response = $this->client->get(self::BASE_URL . $this->href);
         $response = $this->client->get(self::BASE_URL . $uri);
         var_dump(self::BASE_URL . $uri);
-        /*$myfile = fopen("newfile.html", "w") or die("Unable to open file!");
-        $txt = $response->getBody()->getContents();
-        fwrite($myfile, $txt);
-        fclose($myfile);*/
         $dom = new Htmldom($response->getBody());
         $this->eventtarget2 = 'ctl00$centerZone$BriefResume1$CvView1$cvHeader$lnkBuyCv';
         $this->eventargument = $dom->find('input[name=__EVENTARGUMENT]', 0)->value;
         $this->viewstate2 = $dom->find('input[name=__VIEWSTATE]', 0)->value;
         $this->viewstategenerator = $dom->find('input[name=__VIEWSTATEGENERATOR]', 0)->value;
         sleep(3);
-//        $response = $this->client->post(self::BASE_URL . $this->href, [
         $response = $this->client->post(self::BASE_URL . $uri, [
             'form_params' => [
                 '__EVENTTARGET' => $this->eventtarget2,
@@ -130,8 +120,10 @@ class Parser
         //var_dump($response->getBody()->getContents());
 
         $dom = new Htmldom($response->getBody());
-        $email = $dom->find('#centerZone_BriefResume1_CvView1_cvHeader_lblEmailValue', 0)->plaintext;
-        $phone = $dom->find('#centerZone_BriefResume1_CvView1_cvHeader_lblPhoneValue', 0)->plaintext;
+
+        ////////////////////////////uncomment here
+//        $email = $dom->find('#centerZone_BriefResume1_CvView1_cvHeader_lblEmailValue', 0)->plaintext;
+//        $phone = $dom->find('#centerZone_BriefResume1_CvView1_cvHeader_lblPhoneValue', 0)->plaintext;
         //$response = json_decode($response->getBody()->getContents());
 //                if ($response->status <> 'ok') {
 //                    return;
@@ -143,12 +135,13 @@ class Parser
         // check database for duplications
         // SELECT url, COUNT(*) c FROM resume GROUP BY url HAVING c > 1
 
-        $resume = new Resume();
-        $resume->create([
-            "url" => self::BASE_URL . $uri,
-            "phone" => $phone,
-            "email" => $email
-        ]);
+        ////////////////////////////uncomment here
+//        $resume = new Resume();
+//        $resume->create([
+//            "url" => self::BASE_URL . $uri,
+//            "phone" => $phone,
+//            "email" => $email
+//        ]);
 //
                 //$success = $resume->create();
 
